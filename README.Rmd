@@ -14,9 +14,7 @@ knitr::opts_chunk$set(
 options(tibble.print_min = 5, tibble.print_max = 5)
 ```
 
-# qexplore
-
-<!-- # qexplore <a href="https://github.com/jarvisc1/qexplore"><img src="man/figures/logo.svg" align="right" height="139" alt="qexplore website" /></a> -->
+# qexplore <a href="https://github.com/jarvisc1/qexplore"><img src="man/figures/logo.png" align="right" height="139" alt="qexplore website" /></a>
 
 <!-- badges: start -->
 <!-- [![R-CMD-check](https://github.com/jarvic1/qexplore/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jarvic1/qexplore/actions/workflows/R-CMD-check.yaml) -->
