@@ -8,15 +8,10 @@ output: github_document
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  results = FALSE,
-  message = FALSE,
-  warning = FALSE,
-  fig.align = "center",
-  dpi = 300,
-  fig.width = 5,
-  fig.height = 2.5,
-  fig.path = "man/figures/README-"
+  fig.path = "man/figures/README-",
+  out.width = "100%"
 )
+options(tibble.print_min = 5, tibble.print_max = 5)
 ```
 
 # qexplore
@@ -48,7 +43,7 @@ Here are some examples of how to use `qexplore`. For more, refer to the [documen
 ### Listing Rows
 Use `qlist` to filter and explore subsets of data:
   
-```r
+```{r}
 library(qexplore)
 
 # Example dataset
@@ -70,7 +65,7 @@ data |>
 ### Tabulating Data
 Use `qtab` to create summary tables:
   
-```r
+```{r}
 # Tabulate a single variable
 data |>
   qtab(drink_type)
@@ -86,7 +81,7 @@ data |>
 
 ### Advanced Tabulations
 
-```r
+```{r}
 # Tabulate with a filter condition
 data |>
   qtab(drink_type, size, if_ = size == "Large")
