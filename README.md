@@ -16,6 +16,16 @@ interrogating data. It allows users to quickly list rows of a data frame
 that meet certain criteria or tabulate data based on specific
 conditions.
 
+There are two functions `qlist` and `qtab` and they allow you to quickly
+list or tabulate your data.
+
+- `qlist` is tidyverse compatiable as the input and out is a
+  `data.frame`.
+- `qtab` is also compatible with `tidyverse` as the input is a
+  `data.frame` and the `output` is a `tabyl`
+- This also has the unintended consequence that it can be combined with
+  `gt` and `flextable`.
+
 ## Installation
 
 You can install `qexplore` from [GitHub](https://github.com/) with:
@@ -30,8 +40,8 @@ remotes::install_github("jarvisc1/qexplore")
 
 ## Usage
 
-Here are some examples of how to use `qexplore`. There are two functions
-`qlist` and `qtab` They allow you to quickly list or tabulate your data.
+Here are some examples of how to use `qexplore`. First we look at
+`qlist` and then `qtab`.
 
 ### Listing Rows
 
@@ -137,10 +147,10 @@ larger_data |>
 #> Rows: All
 #> Group: None
 #>  drink_type   n percent
-#>   Americano  58   29.0%
-#>  Cappuccino  43   21.5%
-#>    Espresso  59   29.5%
-#>       Latte  40   20.0%
+#>   Americano  42   21.0%
+#>  Cappuccino  48   24.0%
+#>    Espresso  58   29.0%
+#>       Latte  52   26.0%
 #>       Total 200  100.0%
 
 # Tabulate two variables
@@ -153,11 +163,11 @@ larger_data |>
 #> Rows: All
 #> Group: None
 #>  drink_type      Large     Medium      Small        Total
-#>   Americano 13.5% (27) 10.0% (20)  5.5% (11)  29.0%  (58)
-#>  Cappuccino 11.5% (23)  7.5% (15)  2.5%  (5)  21.5%  (43)
-#>    Espresso 15.5% (31)  5.5% (11)  8.5% (17)  29.5%  (59)
-#>       Latte  7.0% (14)  6.5% (13)  6.5% (13)  20.0%  (40)
-#>       Total 47.5% (95) 29.5% (59) 23.0% (46) 100.0% (200)
+#>   Americano 11.0% (22)  5.0% (10)  5.0% (10)  21.0%  (42)
+#>  Cappuccino 13.5% (27)  4.5%  (9)  6.0% (12)  24.0%  (48)
+#>    Espresso 11.0% (22)  5.5% (11) 12.5% (25)  29.0%  (58)
+#>       Latte 13.5% (27)  5.5% (11)  7.0% (14)  26.0%  (52)
+#>       Total 49.0% (98) 20.5% (41) 30.5% (61) 100.0% (200)
 
 # Grouped tabulations
 larger_data |> 
@@ -170,12 +180,12 @@ larger_data |>
 #> Rows: All
 #> Group By: day_of_week
 #> $Mon
-#>  drink_type      Large    Medium     Small       Total
-#>   Americano 17.9%  (5) 14.3% (4)  3.6% (1)  35.7% (10)
-#>  Cappuccino 14.3%  (4) 10.7% (3)  3.6% (1)  28.6%  (8)
-#>    Espresso  7.1%  (2)  0.0% (0)  7.1% (2)  14.3%  (4)
-#>       Latte  7.1%  (2)  0.0% (0) 14.3% (4)  21.4%  (6)
-#>       Total 46.4% (13) 25.0% (7) 28.6% (8) 100.0% (28)
+#>  drink_type      Large   Medium     Small       Total
+#>   Americano  9.5%  (2) 4.8% (1)  4.8% (1)  19.0%  (4)
+#>  Cappuccino  9.5%  (2) 0.0% (0) 14.3% (3)  23.8%  (5)
+#>    Espresso 14.3%  (3) 0.0% (0)  9.5% (2)  23.8%  (5)
+#>       Latte 19.0%  (4) 4.8% (1)  9.5% (2)  33.3%  (7)
+#>       Total 52.4% (11) 9.5% (2) 38.1% (8) 100.0% (21)
 ```
 
 ### Tabulating Data with different percentages
@@ -194,11 +204,11 @@ larger_data |>
 #> Rows: All
 #> Group: None
 #>  drink_type      Large     Medium      Small        Total
-#>   Americano 13.5% (27) 10.0% (20)  5.5% (11)  29.0%  (58)
-#>  Cappuccino 11.5% (23)  7.5% (15)  2.5%  (5)  21.5%  (43)
-#>    Espresso 15.5% (31)  5.5% (11)  8.5% (17)  29.5%  (59)
-#>       Latte  7.0% (14)  6.5% (13)  6.5% (13)  20.0%  (40)
-#>       Total 47.5% (95) 29.5% (59) 23.0% (46) 100.0% (200)
+#>   Americano 11.0% (22)  5.0% (10)  5.0% (10)  21.0%  (42)
+#>  Cappuccino 13.5% (27)  4.5%  (9)  6.0% (12)  24.0%  (48)
+#>    Espresso 11.0% (22)  5.5% (11) 12.5% (25)  29.0%  (58)
+#>       Latte 13.5% (27)  5.5% (11)  7.0% (14)  26.0%  (52)
+#>       Total 49.0% (98) 20.5% (41) 30.5% (61) 100.0% (200)
 
 # column percentages
 larger_data |>
@@ -210,11 +220,11 @@ larger_data |>
 #> Rows: All
 #> Group: None
 #>  drink_type       Large      Medium       Small        Total
-#>   Americano  28.4% (27)  33.9% (20)  23.9% (11)  29.0%  (58)
-#>  Cappuccino  24.2% (23)  25.4% (15)  10.9%  (5)  21.5%  (43)
-#>    Espresso  32.6% (31)  18.6% (11)  37.0% (17)  29.5%  (59)
-#>       Latte  14.7% (14)  22.0% (13)  28.3% (13)  20.0%  (40)
-#>       Total 100.0% (95) 100.0% (59) 100.0% (46) 100.0% (200)
+#>   Americano  22.4% (22)  24.4% (10)  16.4% (10)  21.0%  (42)
+#>  Cappuccino  27.6% (27)  22.0%  (9)  19.7% (12)  24.0%  (48)
+#>    Espresso  22.4% (22)  26.8% (11)  41.0% (25)  29.0%  (58)
+#>       Latte  27.6% (27)  26.8% (11)  23.0% (14)  26.0%  (52)
+#>       Total 100.0% (98) 100.0% (41) 100.0% (61) 100.0% (200)
 
 # row percentages
 larger_data |>
@@ -226,11 +236,11 @@ larger_data |>
 #> Rows: All
 #> Group: None
 #>  drink_type      Large     Medium      Small        Total
-#>   Americano 46.6% (27) 34.5% (20) 19.0% (11) 100.0%  (58)
-#>  Cappuccino 53.5% (23) 34.9% (15) 11.6%  (5) 100.0%  (43)
-#>    Espresso 52.5% (31) 18.6% (11) 28.8% (17) 100.0%  (59)
-#>       Latte 35.0% (14) 32.5% (13) 32.5% (13) 100.0%  (40)
-#>       Total 47.5% (95) 29.5% (59) 23.0% (46) 100.0% (200)
+#>   Americano 52.4% (22) 23.8% (10) 23.8% (10) 100.0%  (42)
+#>  Cappuccino 56.2% (27) 18.8%  (9) 25.0% (12) 100.0%  (48)
+#>    Espresso 37.9% (22) 19.0% (11) 43.1% (25) 100.0%  (58)
+#>       Latte 51.9% (27) 21.2% (11) 26.9% (14) 100.0%  (52)
+#>       Total 49.0% (98) 20.5% (41) 30.5% (61) 100.0% (200)
 # no percentages
 larger_data |>
   qtab(drink_type, size, per = "none")
@@ -241,11 +251,11 @@ larger_data |>
 #> Rows: All
 #> Group: None
 #>  drink_type Large Medium Small Total
-#>   Americano    27     20    11    58
-#>  Cappuccino    23     15     5    43
-#>    Espresso    31     11    17    59
-#>       Latte    14     13    13    40
-#>       Total    95     59    46   200
+#>   Americano    22     10    10    42
+#>  Cappuccino    27      9    12    48
+#>    Espresso    22     11    25    58
+#>       Latte    27     11    14    52
+#>       Total    98     41    61   200
 
 # Grouped tabulations
 data |>
@@ -377,10 +387,9 @@ library(qexplore)
 library(dplyr)
 library(janitor)
 library(gt)
-library(flextable)
 
 # Tabulate specific rows
-data |>
+gt_table <- data |>
   qtab(drink_type, size, in_ = 1:3) |> 
   gt() |> 
     tab_header(
@@ -395,442 +404,12 @@ data |>
 #> Group: None
 ```
 
-<div id="rlujkeduhr" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#rlujkeduhr table {
-  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-&#10;#rlujkeduhr thead, #rlujkeduhr tbody, #rlujkeduhr tfoot, #rlujkeduhr tr, #rlujkeduhr td, #rlujkeduhr th {
-  border-style: none;
-}
-&#10;#rlujkeduhr p {
-  margin: 0;
-  padding: 0;
-}
-&#10;#rlujkeduhr .gt_table {
-  display: table;
-  border-collapse: collapse;
-  line-height: normal;
-  margin-left: auto;
-  margin-right: auto;
-  color: #333333;
-  font-size: 16px;
-  font-weight: normal;
-  font-style: normal;
-  background-color: #FFFFFF;
-  width: auto;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #A8A8A8;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #A8A8A8;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-}
-&#10;#rlujkeduhr .gt_caption {
-  padding-top: 4px;
-  padding-bottom: 4px;
-}
-&#10;#rlujkeduhr .gt_title {
-  color: #333333;
-  font-size: 125%;
-  font-weight: initial;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-color: #FFFFFF;
-  border-bottom-width: 0;
-}
-&#10;#rlujkeduhr .gt_subtitle {
-  color: #333333;
-  font-size: 85%;
-  font-weight: initial;
-  padding-top: 3px;
-  padding-bottom: 5px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-color: #FFFFFF;
-  border-top-width: 0;
-}
-&#10;#rlujkeduhr .gt_heading {
-  background-color: #FFFFFF;
-  text-align: center;
-  border-bottom-color: #FFFFFF;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-&#10;#rlujkeduhr .gt_bottom_border {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-&#10;#rlujkeduhr .gt_col_headings {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-&#10;#rlujkeduhr .gt_col_heading {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 6px;
-  padding-left: 5px;
-  padding-right: 5px;
-  overflow-x: hidden;
-}
-&#10;#rlujkeduhr .gt_column_spanner_outer {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  padding-top: 0;
-  padding-bottom: 0;
-  padding-left: 4px;
-  padding-right: 4px;
-}
-&#10;#rlujkeduhr .gt_column_spanner_outer:first-child {
-  padding-left: 0;
-}
-&#10;#rlujkeduhr .gt_column_spanner_outer:last-child {
-  padding-right: 0;
-}
-&#10;#rlujkeduhr .gt_column_spanner {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  overflow-x: hidden;
-  display: inline-block;
-  width: 100%;
-}
-&#10;#rlujkeduhr .gt_spanner_row {
-  border-bottom-style: hidden;
-}
-&#10;#rlujkeduhr .gt_group_heading {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  text-align: left;
-}
-&#10;#rlujkeduhr .gt_empty_group_heading {
-  padding: 0.5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: middle;
-}
-&#10;#rlujkeduhr .gt_from_md > :first-child {
-  margin-top: 0;
-}
-&#10;#rlujkeduhr .gt_from_md > :last-child {
-  margin-bottom: 0;
-}
-&#10;#rlujkeduhr .gt_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  margin: 10px;
-  border-top-style: solid;
-  border-top-width: 1px;
-  border-top-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  overflow-x: hidden;
-}
-&#10;#rlujkeduhr .gt_stub {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-&#10;#rlujkeduhr .gt_stub_row_group {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-  vertical-align: top;
-}
-&#10;#rlujkeduhr .gt_row_group_first td {
-  border-top-width: 2px;
-}
-&#10;#rlujkeduhr .gt_row_group_first th {
-  border-top-width: 2px;
-}
-&#10;#rlujkeduhr .gt_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-&#10;#rlujkeduhr .gt_first_summary_row {
-  border-top-style: solid;
-  border-top-color: #D3D3D3;
-}
-&#10;#rlujkeduhr .gt_first_summary_row.thick {
-  border-top-width: 2px;
-}
-&#10;#rlujkeduhr .gt_last_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-&#10;#rlujkeduhr .gt_grand_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-&#10;#rlujkeduhr .gt_first_grand_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-style: double;
-  border-top-width: 6px;
-  border-top-color: #D3D3D3;
-}
-&#10;#rlujkeduhr .gt_last_grand_summary_row_top {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: double;
-  border-bottom-width: 6px;
-  border-bottom-color: #D3D3D3;
-}
-&#10;#rlujkeduhr .gt_striped {
-  background-color: rgba(128, 128, 128, 0.05);
-}
-&#10;#rlujkeduhr .gt_table_body {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-&#10;#rlujkeduhr .gt_footnotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-&#10;#rlujkeduhr .gt_footnote {
-  margin: 0px;
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-&#10;#rlujkeduhr .gt_sourcenotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-&#10;#rlujkeduhr .gt_sourcenote {
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-&#10;#rlujkeduhr .gt_left {
-  text-align: left;
-}
-&#10;#rlujkeduhr .gt_center {
-  text-align: center;
-}
-&#10;#rlujkeduhr .gt_right {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-&#10;#rlujkeduhr .gt_font_normal {
-  font-weight: normal;
-}
-&#10;#rlujkeduhr .gt_font_bold {
-  font-weight: bold;
-}
-&#10;#rlujkeduhr .gt_font_italic {
-  font-style: italic;
-}
-&#10;#rlujkeduhr .gt_super {
-  font-size: 65%;
-}
-&#10;#rlujkeduhr .gt_footnote_marks {
-  font-size: 75%;
-  vertical-align: 0.4em;
-  position: initial;
-}
-&#10;#rlujkeduhr .gt_asterisk {
-  font-size: 100%;
-  vertical-align: 0;
-}
-&#10;#rlujkeduhr .gt_indent_1 {
-  text-indent: 5px;
-}
-&#10;#rlujkeduhr .gt_indent_2 {
-  text-indent: 10px;
-}
-&#10;#rlujkeduhr .gt_indent_3 {
-  text-indent: 15px;
-}
-&#10;#rlujkeduhr .gt_indent_4 {
-  text-indent: 20px;
-}
-&#10;#rlujkeduhr .gt_indent_5 {
-  text-indent: 25px;
-}
-</style>
-<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <thead>
-    <tr class="gt_heading">
-      <td colspan="5" class="gt_heading gt_title gt_font_normal" style>Drink Types by Day of the Week</td>
-    </tr>
-    <tr class="gt_heading">
-      <td colspan="5" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border" style>Percentage Breakdown with Totals</td>
-    </tr>
-    <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="drink_type">drink_type</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Large">Large</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Medium">Medium</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Small">Small</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Total">Total</th>
-    </tr>
-  </thead>
-  <tbody class="gt_table_body">
-    <tr><td headers="drink_type" class="gt_row gt_left">Cappuccino</td>
-<td headers="Large" class="gt_row gt_right">0.0% (0)</td>
-<td headers="Medium" class="gt_row gt_right">33.3% (1)</td>
-<td headers="Small" class="gt_row gt_right">0.0% (0)</td>
-<td headers="Total" class="gt_row gt_right">33.3% (1)</td></tr>
-    <tr><td headers="drink_type" class="gt_row gt_left">Espresso</td>
-<td headers="Large" class="gt_row gt_right">33.3% (1)</td>
-<td headers="Medium" class="gt_row gt_right">0.0% (0)</td>
-<td headers="Small" class="gt_row gt_right">0.0% (0)</td>
-<td headers="Total" class="gt_row gt_right">33.3% (1)</td></tr>
-    <tr><td headers="drink_type" class="gt_row gt_left">Latte</td>
-<td headers="Large" class="gt_row gt_right">0.0% (0)</td>
-<td headers="Medium" class="gt_row gt_right">0.0% (0)</td>
-<td headers="Small" class="gt_row gt_right">33.3% (1)</td>
-<td headers="Total" class="gt_row gt_right">33.3% (1)</td></tr>
-    <tr><td headers="drink_type" class="gt_row gt_left">Total</td>
-<td headers="Large" class="gt_row gt_right">33.3% (1)</td>
-<td headers="Medium" class="gt_row gt_right">33.3% (1)</td>
-<td headers="Small" class="gt_row gt_right">33.3% (1)</td>
-<td headers="Total" class="gt_row gt_right">100.0% (3)</td></tr>
-  </tbody>
-  &#10;  
-</table>
-</div>
+![](man/figures/gt_table.png)
 
 ``` r
 library(qexplore)
 library(dplyr)
 library(janitor)
-library(gt)
 library(flextable)
 
 # Tabulate specific rows
@@ -860,7 +439,7 @@ flex_table <- tabyl_data |>
 flex_table
 ```
 
-<img src="man/figures/README-unnamed-chunk-9-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-10-1.png" width="100%" />
 
 <!-- ## Documentation -->
 
