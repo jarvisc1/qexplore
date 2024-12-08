@@ -25,8 +25,8 @@ The goal of `qexplore` is to streamline the process of exploring and interrogati
 
 There are two functions `qlist` and `qtab` and they allow you to quickly list or tabulate your data. 
 
-- `qlist` is tidyverse compatiable as the input and out is a `data.frame`. 
-- `qtab` is also compatible with `tidyverse` as the input is a `data.frame` and the `output` is a `tabyl` 
+- `qlist` is tidyverse compatiable as the input and output is a `data.frame`. 
+- `qtab` is also compatible with `tidyverse` as the input is a `data.frame` and the output is a `tabyl` 
 - This also has the unintended consequence that it can be combined with `gt` and `flextable`. 
 
 ## Installation
@@ -43,6 +43,12 @@ remotes::install_github("jarvisc1/qexplore")
 ## Usage
 
 Here are some examples of how to use `qexplore`. First we look at `qlist` and then `qtab`.
+
+The real power of these commands comes from three arguments. 
+
+- `if_`: this is like filter in dplyr, or the `df[**here**, ]` in base or data.table or the `if` option in `Stata` where the command would be written as `list var1 if var2 == 1` 
+- `in_`: this allows you to select the rows that you'd like to look at very similar to the `in` option in `Stata` or filtering by rows with base or `data.table`.
+- `by_`: Only for `qtab` this allow for a 2x2 table to be printing several times by a third variable. Similar to doing a `table()` by three variables but I prefer this syntax as I think it's cleaner. **Note:** using `by_` will result in the output being a list of `tabyl` so I doubt it will be compatible with `gt` or `flex.table`. 
 
 ### Listing Rows
 Use `qlist` to filter and explore subsets of data:

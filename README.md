@@ -19,10 +19,10 @@ conditions.
 There are two functions `qlist` and `qtab` and they allow you to quickly
 list or tabulate your data.
 
-- `qlist` is tidyverse compatiable as the input and out is a
+- `qlist` is tidyverse compatiable as the input and output is a
   `data.frame`.
 - `qtab` is also compatible with `tidyverse` as the input is a
-  `data.frame` and the `output` is a `tabyl`
+  `data.frame` and the output is a `tabyl`
 - This also has the unintended consequence that it can be combined with
   `gt` and `flextable`.
 
@@ -42,6 +42,20 @@ remotes::install_github("jarvisc1/qexplore")
 
 Here are some examples of how to use `qexplore`. First we look at
 `qlist` and then `qtab`.
+
+The real power of these commands comes from three arguments.
+
+- `if_`: this is like filter in dplyr, or the `df[**here**, ]` in base
+  or data.table or the `if` option in `Stata` where the command would be
+  written as `list var1 if var2 == 1`
+- `in_`: this allows you to select the rows that you’d like to look at
+  very similar to the `in` option in `Stata` or filtering by rows with
+  base or `data.table`.
+- `by_`: Only for `qtab` this allow for a 2x2 table to be printing
+  several times by a third variable. Similar to doing a `table()` by
+  three variables but I prefer this syntax as I think it’s cleaner.
+  **Note:** using `by_` will result in the output being a list of
+  `tabyl` so I doubt it will be compatible with `gt` or `flex.table`.
 
 ### Listing Rows
 
@@ -147,9 +161,9 @@ larger_data |>
 #> Rows: All
 #> Group: None
 #>  drink_type   n percent
-#>   Americano  42   21.0%
-#>  Cappuccino  48   24.0%
-#>    Espresso  58   29.0%
+#>   Americano  48   24.0%
+#>  Cappuccino  53   26.5%
+#>    Espresso  47   23.5%
 #>       Latte  52   26.0%
 #>       Total 200  100.0%
 
@@ -162,12 +176,12 @@ larger_data |>
 #> Filter: None
 #> Rows: All
 #> Group: None
-#>  drink_type      Large     Medium      Small        Total
-#>   Americano 11.0% (22)  5.0% (10)  5.0% (10)  21.0%  (42)
-#>  Cappuccino 13.5% (27)  4.5%  (9)  6.0% (12)  24.0%  (48)
-#>    Espresso 11.0% (22)  5.5% (11) 12.5% (25)  29.0%  (58)
-#>       Latte 13.5% (27)  5.5% (11)  7.0% (14)  26.0%  (52)
-#>       Total 49.0% (98) 20.5% (41) 30.5% (61) 100.0% (200)
+#>  drink_type       Large     Medium      Small        Total
+#>   Americano 11.0%  (22)  7.5% (15)  5.5% (11)  24.0%  (48)
+#>  Cappuccino 15.0%  (30)  4.0%  (8)  7.5% (15)  26.5%  (53)
+#>    Espresso 11.5%  (23)  7.0% (14)  5.0% (10)  23.5%  (47)
+#>       Latte 13.5%  (27)  5.5% (11)  7.0% (14)  26.0%  (52)
+#>       Total 51.0% (102) 24.0% (48) 25.0% (50) 100.0% (200)
 
 # Grouped tabulations
 larger_data |> 
@@ -180,12 +194,12 @@ larger_data |>
 #> Rows: All
 #> Group By: day_of_week
 #> $Mon
-#>  drink_type      Large   Medium     Small       Total
-#>   Americano  9.5%  (2) 4.8% (1)  4.8% (1)  19.0%  (4)
-#>  Cappuccino  9.5%  (2) 0.0% (0) 14.3% (3)  23.8%  (5)
-#>    Espresso 14.3%  (3) 0.0% (0)  9.5% (2)  23.8%  (5)
-#>       Latte 19.0%  (4) 4.8% (1)  9.5% (2)  33.3%  (7)
-#>       Total 52.4% (11) 9.5% (2) 38.1% (8) 100.0% (21)
+#>  drink_type      Large    Medium     Small       Total
+#>   Americano 12.0%  (3)  8.0% (2) 12.0% (3)  32.0%  (8)
+#>  Cappuccino 12.0%  (3)  0.0% (0)  0.0% (0)  12.0%  (3)
+#>    Espresso 12.0%  (3) 12.0% (3)  0.0% (0)  24.0%  (6)
+#>       Latte 16.0%  (4)  8.0% (2)  8.0% (2)  32.0%  (8)
+#>       Total 52.0% (13) 28.0% (7) 20.0% (5) 100.0% (25)
 ```
 
 ### Tabulating Data with different percentages
@@ -203,12 +217,12 @@ larger_data |>
 #> Filter: None
 #> Rows: All
 #> Group: None
-#>  drink_type      Large     Medium      Small        Total
-#>   Americano 11.0% (22)  5.0% (10)  5.0% (10)  21.0%  (42)
-#>  Cappuccino 13.5% (27)  4.5%  (9)  6.0% (12)  24.0%  (48)
-#>    Espresso 11.0% (22)  5.5% (11) 12.5% (25)  29.0%  (58)
-#>       Latte 13.5% (27)  5.5% (11)  7.0% (14)  26.0%  (52)
-#>       Total 49.0% (98) 20.5% (41) 30.5% (61) 100.0% (200)
+#>  drink_type       Large     Medium      Small        Total
+#>   Americano 11.0%  (22)  7.5% (15)  5.5% (11)  24.0%  (48)
+#>  Cappuccino 15.0%  (30)  4.0%  (8)  7.5% (15)  26.5%  (53)
+#>    Espresso 11.5%  (23)  7.0% (14)  5.0% (10)  23.5%  (47)
+#>       Latte 13.5%  (27)  5.5% (11)  7.0% (14)  26.0%  (52)
+#>       Total 51.0% (102) 24.0% (48) 25.0% (50) 100.0% (200)
 
 # column percentages
 larger_data |>
@@ -219,12 +233,12 @@ larger_data |>
 #> Filter: None
 #> Rows: All
 #> Group: None
-#>  drink_type       Large      Medium       Small        Total
-#>   Americano  22.4% (22)  24.4% (10)  16.4% (10)  21.0%  (42)
-#>  Cappuccino  27.6% (27)  22.0%  (9)  19.7% (12)  24.0%  (48)
-#>    Espresso  22.4% (22)  26.8% (11)  41.0% (25)  29.0%  (58)
-#>       Latte  27.6% (27)  26.8% (11)  23.0% (14)  26.0%  (52)
-#>       Total 100.0% (98) 100.0% (41) 100.0% (61) 100.0% (200)
+#>  drink_type        Large      Medium       Small        Total
+#>   Americano  21.6%  (22)  31.2% (15)  22.0% (11)  24.0%  (48)
+#>  Cappuccino  29.4%  (30)  16.7%  (8)  30.0% (15)  26.5%  (53)
+#>    Espresso  22.5%  (23)  29.2% (14)  20.0% (10)  23.5%  (47)
+#>       Latte  26.5%  (27)  22.9% (11)  28.0% (14)  26.0%  (52)
+#>       Total 100.0% (102) 100.0% (48) 100.0% (50) 100.0% (200)
 
 # row percentages
 larger_data |>
@@ -235,12 +249,12 @@ larger_data |>
 #> Filter: None
 #> Rows: All
 #> Group: None
-#>  drink_type      Large     Medium      Small        Total
-#>   Americano 52.4% (22) 23.8% (10) 23.8% (10) 100.0%  (42)
-#>  Cappuccino 56.2% (27) 18.8%  (9) 25.0% (12) 100.0%  (48)
-#>    Espresso 37.9% (22) 19.0% (11) 43.1% (25) 100.0%  (58)
-#>       Latte 51.9% (27) 21.2% (11) 26.9% (14) 100.0%  (52)
-#>       Total 49.0% (98) 20.5% (41) 30.5% (61) 100.0% (200)
+#>  drink_type       Large     Medium      Small        Total
+#>   Americano 45.8%  (22) 31.2% (15) 22.9% (11) 100.0%  (48)
+#>  Cappuccino 56.6%  (30) 15.1%  (8) 28.3% (15) 100.0%  (53)
+#>    Espresso 48.9%  (23) 29.8% (14) 21.3% (10) 100.0%  (47)
+#>       Latte 51.9%  (27) 21.2% (11) 26.9% (14) 100.0%  (52)
+#>       Total 51.0% (102) 24.0% (48) 25.0% (50) 100.0% (200)
 # no percentages
 larger_data |>
   qtab(drink_type, size, per = "none")
@@ -251,11 +265,11 @@ larger_data |>
 #> Rows: All
 #> Group: None
 #>  drink_type Large Medium Small Total
-#>   Americano    22     10    10    42
-#>  Cappuccino    27      9    12    48
-#>    Espresso    22     11    25    58
+#>   Americano    22     15    11    48
+#>  Cappuccino    30      8    15    53
+#>    Espresso    23     14    10    47
 #>       Latte    27     11    14    52
-#>       Total    98     41    61   200
+#>       Total   102     48    50   200
 
 # Grouped tabulations
 data |>
