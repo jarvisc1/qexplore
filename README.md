@@ -32,8 +32,8 @@ remotes::install_github("jarvisc1/qexplore")
 
 ## Usage
 
-Here are some examples of how to use `qexplore`. For more, refer to the
-[documentation](https://github.com/jarvic1/qexplore).
+Here are some examples of how to use `qexplore`. There are two functions
+`qlist` and `qtab` They allow you to quickly list or tabulate your data.
 
 ### Listing Rows
 
