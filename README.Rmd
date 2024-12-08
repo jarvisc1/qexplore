@@ -61,21 +61,80 @@ data |>
   qlist(drink_type, size, if_ = size == "Large")
 ```
 
+### Relation to tidyverse
+`qlist` takes a dataframe as input and outputs a dataframe. Therefore it can be connected to other tidyverse functions. 
+
+```{r}
+library(qexplore)
+library(dplyr)
+
+# Example dataset
+data <- data.frame(
+  drink_type = c("Latte", "Espresso", "Cappuccino", "Americano"),
+  size = c("Small", "Large", "Medium", "Large"),
+  day_of_week = c("Mon", "Tue", "Wed", "Thu")
+)
+
+# List specific rows
+data |> 
+  filter(size %in% c("Small", "Large")) |> 
+  mutate(fav_drink = if_else(drink_type == "Latte", "Fav Drink", "Rubbish Drinks")) |> 
+  qlist(drink_type, fav_drink, size, day_of_week, in_ = 1:2) |> 
+  arrange(fav_drink)
+  
+```
+
 ### Tabulating Data
 Use `qtab` to create summary tables:
   
 ```{r}
+larger_data <- data.frame(
+  drink_type = sample(data$drink_type, 200, replace = TRUE),
+  size = sample(data$size, 200, replace = TRUE),
+  day_of_week = sample(c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"), 200, replace = TRUE),
+  quantity = sample(1:5, 200, replace = TRUE),  # Add variability for quantity
+  price = round(runif(200, 2.5, 6.5), 2)       # Add a random price column
+)
+
+
+
 # Tabulate a single variable
-data |>
+larger_data |>
   qtab(drink_type)
 
 # Tabulate two variables
-data |>
+larger_data |>
   qtab(drink_type, size)
 
 # Grouped tabulations
-data |>
+larger_data |> 
+  filter(day_of_week %in% c("Mon", "Tues")) |> 
   qtab(drink_type, size, by_ = day_of_week)
+```
+
+### Tabulating Data with different percentages
+Use `qtab` with different percentages:
+  
+```{r}
+
+# Tabulate two variables
+larger_data |>
+  qtab(drink_type, size, per = "all")
+
+# column percentages
+larger_data |>
+  qtab(drink_type, size, per = "col")
+
+# row percentages
+larger_data |>
+  qtab(drink_type, size, per = "row")
+# no percentages
+larger_data |>
+  qtab(drink_type, size, per = "none")
+
+# Grouped tabulations
+data |>
+  qtab(drink_type, size, by_ = day_of_week, per = "none")
 ```
 
 ### Advanced Tabulations
@@ -87,11 +146,79 @@ data |>
 
 # Tabulate specific rows
 data |>
-  qtab(drink_type, size, in_ = 1:3)
+  qtab(drink_type, size, in_ = 1:3) 
 
 # Group and filter tabulations
 data |>
   qtab(drink_type, size, by_ = day_of_week, if_ = day_of_week %in% c("Mon", "Tue"))
+```
+
+
+### Relation to tidyverse
+`qtab` outputs a `tabyl` `data.frame` object. Therefore `qtab` can be piped into anything that `tabyl` can  (I think?)
+
+```{r}
+library(qexplore)
+library(dplyr)
+library(janitor)
+library(gt)
+library(flextable)
+
+# Tabulate specific rows
+data |>
+  qtab(drink_type, size, in_ = 1:3) |> 
+   adorn_title(col_name = "Drink size", row_name = "Drink Type")
+  
+```
+
+### Relation to gt and flextable
+Due to `qtab`  being a `tabyl`, this has the consequence that it can be piped into `gt` and `flextable` though this is the purpose as qexplore is about quickly exploring data via the console. This is a nice feature maybe this will have some unintended consequences. 
+
+```{r}
+library(qexplore)
+library(dplyr)
+library(janitor)
+library(gt)
+library(flextable)
+
+# Tabulate specific rows
+data |>
+  qtab(drink_type, size, in_ = 1:3) |> 
+  gt() |> 
+    tab_header(
+    title = "Drink Types by Day of the Week",
+    subtitle = "Percentage Breakdown with Totals"
+  )
+  
+```
+
+```{r}
+library(qexplore)
+library(dplyr)
+library(janitor)
+library(gt)
+library(flextable)
+
+# Tabulate specific rows
+tabyl_data <- data |>
+  qtab(drink_type, size, in_ = 1:3) 
+
+# Convert tabyl to flextable
+flex_table <- tabyl_data |> 
+  flextable() |> 
+  set_header_labels(
+    drink_type = "Drink Type",
+    Total = "Weekly Total"
+  ) |> 
+  add_header_row(
+    values = c("", "Day of the Week"), colwidths = c(1, ncol(tabyl_data) - 1)
+  ) |> 
+  theme_vanilla() |> 
+  autofit()
+
+# View the flextable
+flex_table
+  
 ```
 
 
