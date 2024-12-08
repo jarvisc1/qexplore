@@ -76,6 +76,22 @@ data |>
   qtab(drink_type, size, by_ = day_of_week)
 ```
 
+### Advanced Tabulations
+
+``` r
+# Tabulate with a filter condition
+data |>
+  qtab(drink_type, size, if_ = size == "Large")
+
+# Tabulate specific rows
+data |>
+  qtab(drink_type, size, in_ = 1:3)
+
+# Group and filter tabulations
+data |>
+  qtab(drink_type, size, by_ = day_of_week, if_ = day_of_week %in% c("Mon", "Tue"))
+```
+
 <!-- ## Documentation -->
 
 <!-- The following resources will help you get started: -->

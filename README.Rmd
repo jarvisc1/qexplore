@@ -47,7 +47,7 @@ Here are some examples of how to use `qexplore`. For more, refer to the [documen
 
 ### Listing Rows
 Use `qlist` to filter and explore subsets of data:
-
+  
 ```r
 library(qexplore)
 
@@ -69,7 +69,7 @@ data |>
 
 ### Tabulating Data
 Use `qtab` to create summary tables:
-
+  
 ```r
 # Tabulate a single variable
 data |>
@@ -83,6 +83,23 @@ data |>
 data |>
   qtab(drink_type, size, by_ = day_of_week)
 ```
+
+### Advanced Tabulations
+
+```r
+# Tabulate with a filter condition
+data |>
+  qtab(drink_type, size, if_ = size == "Large")
+
+# Tabulate specific rows
+data |>
+  qtab(drink_type, size, in_ = 1:3)
+
+# Group and filter tabulations
+data |>
+  qtab(drink_type, size, by_ = day_of_week, if_ = day_of_week %in% c("Mon", "Tue"))
+```
+
 
 <!-- ## Documentation -->
 

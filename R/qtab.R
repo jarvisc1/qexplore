@@ -69,6 +69,12 @@
 #' @export
 qtab <- function(data, ..., if_ = NULL, in_ = NULL, per = "all", by_ = NULL, suppress = FALSE) {
 
+  # Early return if data is empty
+  if (nrow(data) == 0 || ncol(data) == 0) {
+    cli::cli_warn("The data frame is empty. Returning an empty result.")
+    return(data.frame())
+  }
+
   # Match percentage argument, with "all" as default
   per <- match.arg(per, choices = c("none", "row", "col", "all"))
 
@@ -79,19 +85,27 @@ qtab <- function(data, ..., if_ = NULL, in_ = NULL, per = "all", by_ = NULL, sup
   selected_vars <- tidyselect::eval_select(rlang::expr(c(...)), data)
   var_names <- names(selected_vars)
 
-  # Handle `in_` for row subsetting
+  # Handle positive and negative indices in `in_`
   if (!is.null(in_)) {
-    if (all(in_ < 0)) {
-      data <- data[(nrow(data) + in_ + 1), ]
-    } else {
-      data <- data[in_, ]
+    valid_indices <- in_[in_ > 0 & in_ <= nrow(data)] # Filter valid positive indices
+    valid_indices <- c(valid_indices, (nrow(data) + in_[in_ < 0] + 1)) # Handle valid negative indices
+    valid_indices <- valid_indices[valid_indices > 0 & valid_indices <= nrow(data)] # Recheck bounds
+
+    if (length(valid_indices) == 0) {
+      # If no valid indices, return empty data frame with selected columns
+      return(data.frame(matrix(ncol = length(var_names), nrow = 0, dimnames = list(NULL, var_names))))
     }
+    data <- data[valid_indices, , drop = FALSE]
   }
 
   # Apply filtering with `if_`
   if_quo <- rlang::enquo(if_)
   if (!rlang::quo_is_null(if_quo)) {
     data <- data |> dplyr::filter(!!if_quo)
+    if (nrow(data) == 0) {
+      # Return an empty table structure when no rows match the filter
+      return(data.frame(matrix(ncol = length(var_names), nrow = 0, dimnames = list(NULL, var_names))))
+    }
   }
 
   # Print metadata only if not suppressed
@@ -140,7 +154,7 @@ qtab <- function(data, ..., if_ = NULL, in_ = NULL, per = "all", by_ = NULL, sup
       setNames(data |> dplyr::distinct(!!by_quo) |> dplyr::pull(!!by_quo)) |>
       lapply(function(group_data) {
         group_label <- unique(group_data |> dplyr::pull(!!by_quo))[1]
-        tidy_tab(group_data, ..., per = per, suppress = TRUE)
+        qtab(group_data, ..., per = per, suppress = TRUE)
       })
 
     return(result)

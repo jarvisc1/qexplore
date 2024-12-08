@@ -56,20 +56,28 @@
 #'   qlist(drink_type, size, day_of_week, if_ = day_of_week %in% c("Sat", "Sun"), in_ = -10:-1)
 #' @export
 qlist <- function(data, ..., if_ = NULL, in_ = NULL) {
-  # Function body remains unchanged
-}
-qlist <- function(data, ..., if_ = NULL, in_ = NULL) {
+
+  # Early return if data is empty
+  if (nrow(data) == 0 || ncol(data) == 0) {
+    cli::cli_warn("The data frame is empty. Returning an empty result.")
+    return(data.frame())
+  }
+
   # Select variables using tidyselect
   selected_vars <- tidyselect::eval_select(rlang::expr(c(...)), data)
   var_names <- names(selected_vars)
 
   # Handle positive and negative indices in `in_`
   if (!is.null(in_)) {
-    if (all(in_ < 0)) {
-      data <- data[(nrow(data) + in_ + 1), ]
-    } else {
-      data <- data[in_, ]
+    valid_indices <- in_[in_ > 0 & in_ <= nrow(data)] # Filter valid positive indices
+    valid_indices <- c(valid_indices, (nrow(data) + in_[in_ < 0] + 1)) # Handle valid negative indices
+    valid_indices <- valid_indices[valid_indices > 0 & valid_indices <= nrow(data)] # Recheck bounds
+
+    if (length(valid_indices) == 0) {
+      # If no valid indices, return empty data frame with selected columns
+      return(data.frame(matrix(ncol = length(var_names), nrow = 0, dimnames = list(NULL, var_names))))
     }
+    data <- data[valid_indices, , drop = FALSE]
   }
 
   # Capture the `if_` expression using tidy evaluation
@@ -114,5 +122,5 @@ qlist <- function(data, ..., if_ = NULL, in_ = NULL) {
   selected_data <- dplyr::select(data, dplyr::all_of(var_names))
 
   # Return the filtered data frame
-  return(data)
+  return(selected_data)
 }
