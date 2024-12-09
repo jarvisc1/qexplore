@@ -4,16 +4,16 @@
 \alias{qlist}
 \title{Filter and Display Data with Metadata}
 \usage{
-qlist(data, ..., if_ = NULL, in_ = NULL)
+qlist(data, ..., .if = NULL, .in = NULL)
 }
 \arguments{
 \item{data}{A data frame to be filtered and processed.}
 
 \item{...}{One or more column names (unquoted) to select. Supports tidy evaluation.}
 
-\item{if_}{An optional filter condition (using tidy evaluation) to subset the data.}
+\item{.if}{An optional filter condition (using tidy evaluation) to subset the data.}
 
-\item{in_}{An optional integer vector specifying rows to include or exclude. Negative values
+\item{.in}{An optional integer vector specifying rows to include or exclude. Negative values
 indicate rows to exclude from the end, while positive values indicate rows to include.}
 }
 \value{
@@ -29,8 +29,8 @@ The function provides a quick way to explore and filter data:
 
 \itemize{
   \item Columns are selected using tidy evaluation syntax.
-  \item Filtering is applied using the `if_` parameter with tidy evaluation.
-  \item Row selection is possible using the `in_` parameter, supporting both inclusion and exclusion.
+  \item Filtering is applied using the `.if` parameter with tidy evaluation.
+  \item Row selection is possible using the `.in` parameter, supporting both inclusion and exclusion.
   \item Metadata about selected columns, filter conditions, and rows is displayed in the console.
   \item For more than 10 columns, the display shows "More than 10" instead of listing all columns.
   \item Consecutive row numbers are displayed as ranges (e.g., "1:5" instead of "1, 2, 3, 4, 5").
@@ -53,17 +53,17 @@ coffee_orders |>
 
 # Apply a filter condition
 coffee_orders |>
-  qlist(drink_type, size, add_milk, if_ = size == "Large")
+  qlist(drink_type, size, add_milk, .if = size == "Large")
 
 # Select specific rows
 coffee_orders |>
-  qlist(drink_type, size, day_of_week, in_ = 1:5)
+  qlist(drink_type, size, day_of_week, .in = 1:5)
 
 # Select last 10 rows
 coffee_orders |>
-  qlist(drink_type, size, day_of_week, in_ = -10:-1)
+  qlist(drink_type, size, day_of_week, .in = -10:-1)
 
 # Combine filtering and row selection
 coffee_orders |>
-  qlist(drink_type, size, day_of_week, if_ = day_of_week \%in\% c("Sat", "Sun"), in_ = -10:-1)
+  qlist(drink_type, size, day_of_week, .if = day_of_week \%in\% c("Sat", "Sun"), .in = -10:-1)
 }

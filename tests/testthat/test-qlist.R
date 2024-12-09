@@ -14,7 +14,7 @@ test_that("qlist selects correct columns", {
   expect_equal(colnames(result), c("drink_type", "size"))
 })
 
-test_that("qlist filters rows correctly using if_", {
+test_that("qlist filters rows correctly using .if", {
   data <- data.frame(
     drink_type = c("Latte", "Espresso", "Cappuccino"),
     size = c("Small", "Large", "Medium"),
@@ -22,13 +22,13 @@ test_that("qlist filters rows correctly using if_", {
   )
 
   result <- data |>
-    qlist(drink_type, size, if_ = size == "Large")
+    qlist(drink_type, size, .if = size == "Large")
 
   expect_equal(nrow(result), 1)
   expect_equal(result$size, "Large")
 })
 
-test_that("qlist selects rows correctly using in_", {
+test_that("qlist selects rows correctly using .in", {
   data <- data.frame(
     drink_type = c("Latte", "Espresso", "Cappuccino", "Americano"),
     size = c("Small", "Large", "Medium", "Large"),
@@ -36,13 +36,13 @@ test_that("qlist selects rows correctly using in_", {
   )
 
   result <- data |>
-    qlist(drink_type, size, in_ = 1:2)
+    qlist(drink_type, size, .in = 1:2)
 
   expect_equal(nrow(result), 2)
   expect_equal(result$drink_type, c("Latte", "Espresso"))
 })
 
-test_that("qlist selects last rows using negative in_ indices", {
+test_that("qlist selects last rows using negative .in indices", {
   data <- data.frame(
     drink_type = c("Latte", "Espresso", "Cappuccino", "Americano"),
     size = c("Small", "Large", "Medium", "Large"),
@@ -50,13 +50,13 @@ test_that("qlist selects last rows using negative in_ indices", {
   )
 
   result <- data |>
-    qlist(drink_type, size, in_ = -2:-1)
+    qlist(drink_type, size, .in = -2:-1)
 
   expect_equal(nrow(result), 2)
   expect_equal(result$drink_type, c("Cappuccino", "Americano"))
 })
 
-test_that("qlist handles both if_ and in_ together", {
+test_that("qlist handles both .if and .in together", {
   data <- data.frame(
     drink_type = c("Latte", "Espresso", "Cappuccino", "Americano"),
     size = c("Small", "Large", "Medium", "Large"),
@@ -64,7 +64,7 @@ test_that("qlist handles both if_ and in_ together", {
   )
 
   result <- data |>
-    qlist(drink_type, size, if_ = size == "Large", in_ = 2:3)
+    qlist(drink_type, size, .if = size == "Large", .in = 2:3)
 
   expect_equal(nrow(result), 1)
   expect_equal(result$drink_type, "Espresso")
@@ -83,7 +83,7 @@ test_that("qlist handles empty data frames gracefully and emits a warning", {
   expect_equal(ncol(result), 0)
 })
 
-test_that("qlist returns empty data frame when no rows match if_", {
+test_that("qlist returns empty data frame when no rows match .if", {
   data <- data.frame(
     drink_type = c("Latte", "Espresso", "Cappuccino"),
     size = c("Small", "Large", "Medium"),
@@ -91,13 +91,13 @@ test_that("qlist returns empty data frame when no rows match if_", {
   )
 
   result <- data |>
-    qlist(drink_type, size, if_ = size == "Extra Large")
+    qlist(drink_type, size, .if = size == "Extra Large")
 
   expect_equal(nrow(result), 0)
   expect_equal(colnames(result), c("drink_type", "size"))
 })
 
-test_that("qlist handles invalid in_ indices", {
+test_that("qlist handles invalid .in indices", {
   data <- data.frame(
     drink_type = c("Latte", "Espresso", "Cappuccino"),
     size = c("Small", "Large", "Medium"),
@@ -105,7 +105,7 @@ test_that("qlist handles invalid in_ indices", {
   )
 
   result <- data |>
-    qlist(drink_type, size, in_ = 10:20)
+    qlist(drink_type, size, .in = 10:20)
 
   expect_equal(nrow(result), 0)
   expect_equal(colnames(result), c("drink_type", "size"))

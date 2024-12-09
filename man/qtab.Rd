@@ -7,10 +7,10 @@
 qtab(
   data,
   ...,
-  if_ = NULL,
-  in_ = NULL,
   per = "all",
-  by_ = NULL,
+  .if = NULL,
+  .in = NULL,
+  .by = NULL,
   suppress = FALSE
 )
 }
@@ -20,21 +20,21 @@ qtab(
 \item{...}{One or two variable names (unquoted) to create tabular summaries.
 Supports tidy evaluation.}
 
-\item{if_}{An optional filter condition (using tidy evaluation) to subset the data before tabulation.}
-
-\item{in_}{An optional integer vector specifying rows to include or exclude. Negative values
-indicate rows to exclude from the end, while positive values indicate rows to include.}
-
 \item{per}{A character string specifying how percentages are calculated. Options are:
 `"none"`, `"row"`, `"col"`, or `"all"`. Defaults to `"all"`.}
 
-\item{by_}{An optional variable (unquoted) to group data by before creating summaries.
+\item{.if}{An optional filter condition (using tidy evaluation) to subset the data before tabulation.}
+
+\item{.in}{An optional integer vector specifying rows to include or exclude. Negative values
+indicate rows to exclude from the end, while positive values indicate rows to include.}
+
+\item{.by}{An optional variable (unquoted) to group data by before creating summaries.
 Supports tidy evaluation.}
 
 \item{suppress}{A logical value. If `TRUE`, suppresses metadata output. Defaults to `FALSE`.}
 }
 \value{
-A table or list of tables (if `by_` is used), summarizing the data based on
+A table or list of tables (if `.by` is used), summarizing the data based on
         the specified variables.
         \itemize{
           \item For one variable: a frequency table with percentages.
@@ -52,9 +52,9 @@ The function provides a versatile way to create summary tables:
 \itemize{
   \item Single variable tabulation produces a frequency table.
   \item Two-variable tabulation creates a cross-tabulation.
-  \item Using `by_` allows for grouped tabulations across categories.
-  \item The `if_` parameter enables filtering before tabulation.
-  \item Row selection is possible using the `in_` parameter.
+  \item Using `.by` allows for grouped tabulations across categories.
+  \item The `.if` parameter enables filtering before tabulation.
+  \item Row selection is possible using the `.in` parameter.
   \item Percentage calculations can be customized with the `per` parameter.
   \item Metadata display can be controlled with the `suppress` parameter.
 }
@@ -76,11 +76,11 @@ coffee_orders |>
 
 # Tabulate with a filter condition
 coffee_orders |>
-  qtab(drink_type, if_ = day_of_week \%in\% c("Sat", "Sun"))
+  qtab(drink_type, .if = day_of_week \%in\% c("Sat", "Sun"))
 
 # Tabulate with specific rows
 coffee_orders |>
-  qtab(drink_type, in_ = 1:50)
+  qtab(drink_type, .in = 1:50)
 
 # Cross-tabulate two variables
 coffee_orders |>
@@ -88,5 +88,5 @@ coffee_orders |>
 
 # Grouped tabulations
 coffee_orders |>
-  qtab(drink_type, size, by_ = day_of_week)
+  qtab(drink_type, size, .by = day_of_week)
 }

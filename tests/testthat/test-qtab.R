@@ -30,7 +30,7 @@ test_that("qtab cross-tabulates correctly", {
   expect_true("Cappuccino" %in% result$drink_type)
 })
 
-test_that("qtab applies filter with if_", {
+test_that("qtab applies filter with .if", {
   data <- data.frame(
     drink_type = c("Latte", "Espresso", "Latte", "Cappuccino"),
     size = c("Small", "Large", "Small", "Medium"),
@@ -38,28 +38,28 @@ test_that("qtab applies filter with if_", {
   )
 
   result <- data |>
-    qtab(drink_type, if_ = day_of_week == "Tue")
+    qtab(drink_type, .if = day_of_week == "Tue")
 
   expect_true("Latte" %in% result$drink_type)
   expect_true("Espresso" %in% result$drink_type)
   expect_equal(nrow(result), 3)
 })
 
-test_that("qtab limits rows with in_", {
+test_that("qtab limits rows with .in", {
   data <- data.frame(
     drink_type = c("Latte", "Espresso", "Cappuccino", "Americano"),
     size = c("Small", "Large", "Medium", "Large")
   )
 
   result <- data |>
-    qtab(drink_type, in_ = 1:2)
+    qtab(drink_type, .in = 1:2)
 
   expect_equal(nrow(result), 3)
   expect_true("Latte" %in% result$drink_type)
   expect_true("Espresso" %in% result$drink_type)
 })
 
-test_that("qtab combines if_ and in_", {
+test_that("qtab combines .if and .in", {
   data <- data.frame(
     drink_type = c("Latte", "Espresso", "Latte", "Cappuccino"),
     size = c("Small", "Large", "Small", "Medium"),
@@ -67,13 +67,13 @@ test_that("qtab combines if_ and in_", {
   )
 
   result <- data |>
-    qtab(drink_type, if_ = day_of_week == "Tue", in_ = 2:3)
+    qtab(drink_type, .if = day_of_week == "Tue", .in = 2:3)
 
   expect_equal(nrow(result), 3)
   expect_equal(result$drink_type, c("Espresso", "Latte", "Total"))
 })
 
-test_that("qtab groups correctly with by_", {
+test_that("qtab groups correctly with .by", {
   data <- data.frame(
     drink_type = c("Latte", "Espresso", "Latte", "Cappuccino"),
     size = c("Small", "Large", "Small", "Medium"),
@@ -81,7 +81,7 @@ test_that("qtab groups correctly with by_", {
   )
 
   result <- data |>
-    qtab(drink_type, size, by_ = day_of_week)
+    qtab(drink_type, size, .by = day_of_week)
 
   expect_equal(length(result), 3) # Groups: Mon, Tue, Wed
   expect_equal(nrow(result[["Mon"]]), 2)
@@ -100,7 +100,7 @@ test_that("qtab handles empty data frames gracefully and emits a warning", {
   expect_equal(ncol(result), 0)
 })
 
-test_that("qtab handles no matching rows from if_", {
+test_that("qtab handles no matching rows from .if", {
   data <- data.frame(
     drink_type = c("Latte", "Espresso", "Cappuccino"),
     size = c("Small", "Large", "Medium"),
@@ -108,7 +108,7 @@ test_that("qtab handles no matching rows from if_", {
   )
 
   result <- data |>
-    qtab(drink_type, if_ = size == "Extra Large")
+    qtab(drink_type, .if = size == "Extra Large")
 
   expect_equal(nrow(result), 0)
 })

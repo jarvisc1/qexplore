@@ -6,8 +6,8 @@
 #'
 #' @param data A data frame to be filtered and processed.
 #' @param ... One or more column names (unquoted) to select. Supports tidy evaluation.
-#' @param if_ An optional filter condition (using tidy evaluation) to subset the data.
-#' @param in_ An optional integer vector specifying rows to include or exclude. Negative values
+#' @param .if An optional filter condition (using tidy evaluation) to subset the data.
+#' @param .in An optional integer vector specifying rows to include or exclude. Negative values
 #'            indicate rows to exclude from the end, while positive values indicate rows to include.
 #'
 #' @return A filtered and selected data frame.
@@ -17,8 +17,8 @@
 #'
 #' \itemize{
 #'   \item Columns are selected using tidy evaluation syntax.
-#'   \item Filtering is applied using the `if_` parameter with tidy evaluation.
-#'   \item Row selection is possible using the `in_` parameter, supporting both inclusion and exclusion.
+#'   \item Filtering is applied using the `.if` parameter with tidy evaluation.
+#'   \item Row selection is possible using the `.in` parameter, supporting both inclusion and exclusion.
 #'   \item Metadata about selected columns, filter conditions, and rows is displayed in the console.
 #'   \item For more than 10 columns, the display shows "More than 10" instead of listing all columns.
 #'   \item Consecutive row numbers are displayed as ranges (e.g., "1:5" instead of "1, 2, 3, 4, 5").
@@ -41,21 +41,21 @@
 #'
 #' # Apply a filter condition
 #' coffee_orders |>
-#'   qlist(drink_type, size, add_milk, if_ = size == "Large")
+#'   qlist(drink_type, size, add_milk, .if = size == "Large")
 #'
 #' # Select specific rows
 #' coffee_orders |>
-#'   qlist(drink_type, size, day_of_week, in_ = 1:5)
+#'   qlist(drink_type, size, day_of_week, .in = 1:5)
 #'
 #' # Select last 10 rows
 #' coffee_orders |>
-#'   qlist(drink_type, size, day_of_week, in_ = -10:-1)
+#'   qlist(drink_type, size, day_of_week, .in = -10:-1)
 #'
 #' # Combine filtering and row selection
 #' coffee_orders |>
-#'   qlist(drink_type, size, day_of_week, if_ = day_of_week %in% c("Sat", "Sun"), in_ = -10:-1)
+#'   qlist(drink_type, size, day_of_week, .if = day_of_week %in% c("Sat", "Sun"), .in = -10:-1)
 #' @export
-qlist <- function(data, ..., if_ = NULL, in_ = NULL) {
+qlist <- function(data, ..., .if = NULL, .in = NULL) {
 
   # Early return if data is empty
   if (nrow(data) == 0 || ncol(data) == 0) {
@@ -65,12 +65,19 @@ qlist <- function(data, ..., if_ = NULL, in_ = NULL) {
 
   # Select variables using tidyselect
   selected_vars <- tidyselect::eval_select(rlang::expr(c(...)), data)
+
+  # If no columns are selected, default to all columns
+  if (length(selected_vars) == 0) {
+    selected_vars <- setNames(seq_along(data), names(data))
+  }
+
   var_names <- names(selected_vars)
 
-  # Handle positive and negative indices in `in_`
-  if (!is.null(in_)) {
-    valid_indices <- in_[in_ > 0 & in_ <= nrow(data)] # Filter valid positive indices
-    valid_indices <- c(valid_indices, (nrow(data) + in_[in_ < 0] + 1)) # Handle valid negative indices
+  print(selected_vars)
+  # Handle positive and negative indices in `.in`
+  if (!is.null(.in)) {
+    valid_indices <- .in[.in > 0 & .in <= nrow(data)] # Filter valid positive indices
+    valid_indices <- c(valid_indices, (nrow(data) + .in[.in < 0] + 1)) # Handle valid negative indices
     valid_indices <- valid_indices[valid_indices > 0 & valid_indices <= nrow(data)] # Recheck bounds
 
     if (length(valid_indices) == 0) {
@@ -80,8 +87,8 @@ qlist <- function(data, ..., if_ = NULL, in_ = NULL) {
     data <- data[valid_indices, , drop = FALSE]
   }
 
-  # Capture the `if_` expression using tidy evaluation
-  if_quo <- rlang::enquo(if_)
+  # Capture the `.if` expression using tidy evaluation
+  if_quo <- rlang::enquo(.if)
   if (!rlang::quo_is_null(if_quo)) {
     data <- dplyr::filter(data, !!if_quo)
   }
@@ -103,11 +110,11 @@ qlist <- function(data, ..., if_ = NULL, in_ = NULL) {
     cli::cli_text(cli::col_red("Filter: None"))
   }
 
-  if (!is.null(in_)) {
-    rows_info <- if (all(in_ < 0)) {
-      paste0("Last ", abs(in_[1]))
+  if (!is.null(.in)) {
+    rows_info <- if (all(.in < 0)) {
+      paste0("Last ", abs(.in[1]))
     } else {
-      ranges <- split(in_, cumsum(c(1, diff(in_) != 1)))
+      ranges <- split(.in, cumsum(c(1, diff(.in) != 1)))
       ranges_str <- sapply(ranges, function(r) {
         if (length(r) > 1) paste0(min(r), ":", max(r)) else as.character(r)
       })

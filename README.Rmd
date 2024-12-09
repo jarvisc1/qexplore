@@ -46,9 +46,9 @@ Here are some examples of how to use `qexplore`. First we look at `qlist` and th
 
 The real power of these commands comes from three arguments. 
 
-- `if_`: this is like filter in dplyr, or the `df[**here**, ]` in base or data.table or the `if` option in `Stata` where the command would be written as `list var1 if var2 == 1` 
-- `in_`: this allows you to select the rows that you'd like to look at very similar to the `in` option in `Stata` or filtering by rows with base or `data.table`.
-- `by_`: Only for `qtab` this allow for a 2x2 table to be printing several times by a third variable. Similar to doing a `table()` by three variables but I prefer this syntax as I think it's cleaner. **Note:** using `by_` will result in the output being a list of `tabyl` so I doubt it will be compatible with `gt` or `flex.table`. 
+- `.if`: this is like filter in dplyr, or the `df[**here**, ]` in base or data.table or the `if` option in `Stata` where the command would be written as `list var1 if var2 == 1` 
+- `.in`: this allows you to select the rows that you'd like to look at very similar to the `in` option in `Stata` or filtering by rows with base or `data.table`.
+- `.by`: Only for `qtab` this allow for a 2x2 table to be printing several times by a third variable. Similar to doing a `table()` by three variables but I prefer this syntax as I think it's cleaner. **Note:** using `.by` will result in the output being a list of `tabyl` so I doubt it will be compatible with `gt` or `flex.table`. 
 
 ### Listing Rows
 Use `qlist` to filter and explore subsets of data:
@@ -65,11 +65,11 @@ data <- data.frame(
 
 # List specific rows
 data |>
-  qlist(drink_type, size, day_of_week, in_ = 1:2)
+  qlist(drink_type, size, day_of_week, .in = 1:2)
 
 # Filter and list
 data |>
-  qlist(drink_type, size, if_ = size == "Large")
+  qlist(drink_type, size, .if = size == "Large")
 ```
 
 ### Relation to tidyverse
@@ -90,7 +90,7 @@ data <- data.frame(
 data |> 
   filter(size %in% c("Small", "Large")) |> 
   mutate(fav_drink = if_else(drink_type == "Latte", "Fav Drink", "Rubbish Drinks")) |> 
-  qlist(drink_type, fav_drink, size, day_of_week, in_ = 1:2) |> 
+  qlist(drink_type, fav_drink, size, day_of_week, .in = 1:2) |> 
   arrange(fav_drink)
   
 ```
@@ -120,7 +120,7 @@ larger_data |>
 # Grouped tabulations
 larger_data |> 
   filter(day_of_week %in% c("Mon", "Tues")) |> 
-  qtab(drink_type, size, by_ = day_of_week)
+  qtab(drink_type, size, .by = day_of_week)
 ```
 
 ### Tabulating Data with different percentages
@@ -145,7 +145,7 @@ larger_data |>
 
 # Grouped tabulations
 data |>
-  qtab(drink_type, size, by_ = day_of_week, per = "none")
+  qtab(drink_type, size, .by = day_of_week, per = "none")
 ```
 
 ### Advanced Tabulations
@@ -153,15 +153,15 @@ data |>
 ```{r}
 # Tabulate with a filter condition
 data |>
-  qtab(drink_type, size, if_ = size == "Large")
+  qtab(drink_type, size, .if = size == "Large")
 
 # Tabulate specific rows
 data |>
-  qtab(drink_type, size, in_ = 1:3) 
+  qtab(drink_type, size, .in = 1:3) 
 
 # Group and filter tabulations
 data |>
-  qtab(drink_type, size, by_ = day_of_week, if_ = day_of_week %in% c("Mon", "Tue"))
+  qtab(drink_type, size, .by = day_of_week, .if = day_of_week %in% c("Mon", "Tue"))
 ```
 
 
@@ -177,7 +177,7 @@ library(flextable)
 
 # Tabulate specific rows
 data |>
-  qtab(drink_type, size, in_ = 1:3) |> 
+  qtab(drink_type, size, .in = 1:3) |> 
    adorn_title(col_name = "Drink size", row_name = "Drink Type")
   
 ```
@@ -194,7 +194,7 @@ library(gt)
 
 # Tabulate specific rows
 gt_table <- data |>
-  qtab(drink_type, size, in_ = 1:3) |> 
+  qtab(drink_type, size, .in = 1:3) |> 
   gt() |> 
     tab_header(
     title = "Drink Types by Day of the Week",
@@ -219,7 +219,7 @@ library(flextable)
 
 # Tabulate specific rows
 tabyl_data <- data |>
-  qtab(drink_type, size, in_ = 1:3) 
+  qtab(drink_type, size, .in = 1:3) 
 
 # Convert tabyl to flextable
 flex_table <- tabyl_data |> 

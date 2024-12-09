@@ -45,16 +45,16 @@ Here are some examples of how to use `qexplore`. First we look at
 
 The real power of these commands comes from three arguments.
 
-- `if_`: this is like filter in dplyr, or the `df[**here**, ]` in base
+- `.if`: this is like filter in dplyr, or the `df[**here**, ]` in base
   or data.table or the `if` option in `Stata` where the command would be
   written as `list var1 if var2 == 1`
-- `in_`: this allows you to select the rows that you’d like to look at
+- `.in`: this allows you to select the rows that you’d like to look at
   very similar to the `in` option in `Stata` or filtering by rows with
   base or `data.table`.
-- `by_`: Only for `qtab` this allow for a 2x2 table to be printing
+- `.by`: Only for `qtab` this allow for a 2x2 table to be printing
   several times by a third variable. Similar to doing a `table()` by
   three variables but I prefer this syntax as I think it’s cleaner.
-  **Note:** using `by_` will result in the output being a list of
+  **Note:** using `.by` will result in the output being a list of
   `tabyl` so I doubt it will be compatible with `gt` or `flex.table`.
 
 ### Listing Rows
@@ -73,7 +73,9 @@ data <- data.frame(
 
 # List specific rows
 data |>
-  qlist(drink_type, size, day_of_week, in_ = 1:2)
+  qlist(drink_type, size, day_of_week, .in = 1:2)
+#>  drink_type        size day_of_week 
+#>           1           2           3
 #> 
 #> ── List Details: ───────────────────────────────────────────────────────────────
 #> Columns: drink_type, size, day_of_week
@@ -85,7 +87,9 @@ data |>
 
 # Filter and list
 data |>
-  qlist(drink_type, size, if_ = size == "Large")
+  qlist(drink_type, size, .if = size == "Large")
+#> drink_type       size 
+#>          1          2
 #> 
 #> ── List Details: ───────────────────────────────────────────────────────────────
 #> Columns: drink_type, size
@@ -124,8 +128,10 @@ data <- data.frame(
 data |> 
   filter(size %in% c("Small", "Large")) |> 
   mutate(fav_drink = if_else(drink_type == "Latte", "Fav Drink", "Rubbish Drinks")) |> 
-  qlist(drink_type, fav_drink, size, day_of_week, in_ = 1:2) |> 
+  qlist(drink_type, fav_drink, size, day_of_week, .in = 1:2) |> 
   arrange(fav_drink)
+#>  drink_type   fav_drink        size day_of_week 
+#>           1           4           2           3
 #> 
 #> ── List Details: ───────────────────────────────────────────────────────────────
 #> Columns: drink_type, fav_drink, size, day_of_week
@@ -161,10 +167,10 @@ larger_data |>
 #> Rows: All
 #> Group: None
 #>  drink_type   n percent
-#>   Americano  48   24.0%
-#>  Cappuccino  53   26.5%
-#>    Espresso  47   23.5%
-#>       Latte  52   26.0%
+#>   Americano  51   25.5%
+#>  Cappuccino  54   27.0%
+#>    Espresso  53   26.5%
+#>       Latte  42   21.0%
 #>       Total 200  100.0%
 
 # Tabulate two variables
@@ -177,16 +183,16 @@ larger_data |>
 #> Rows: All
 #> Group: None
 #>  drink_type       Large     Medium      Small        Total
-#>   Americano 11.0%  (22)  7.5% (15)  5.5% (11)  24.0%  (48)
-#>  Cappuccino 15.0%  (30)  4.0%  (8)  7.5% (15)  26.5%  (53)
-#>    Espresso 11.5%  (23)  7.0% (14)  5.0% (10)  23.5%  (47)
-#>       Latte 13.5%  (27)  5.5% (11)  7.0% (14)  26.0%  (52)
-#>       Total 51.0% (102) 24.0% (48) 25.0% (50) 100.0% (200)
+#>   Americano 16.5%  (33)  3.5%  (7)  5.5% (11)  25.5%  (51)
+#>  Cappuccino 16.5%  (33)  5.5% (11)  5.0% (10)  27.0%  (54)
+#>    Espresso 14.0%  (28)  8.5% (17)  4.0%  (8)  26.5%  (53)
+#>       Latte 12.5%  (25)  4.0%  (8)  4.5%  (9)  21.0%  (42)
+#>       Total 59.5% (119) 21.5% (43) 19.0% (38) 100.0% (200)
 
 # Grouped tabulations
 larger_data |> 
   filter(day_of_week %in% c("Mon", "Tues")) |> 
-  qtab(drink_type, size, by_ = day_of_week)
+  qtab(drink_type, size, .by = day_of_week)
 #> 
 #> ── Table Details: ──────────────────────────────────────────────────────────────
 #> Columns: drink_type, size
@@ -195,11 +201,11 @@ larger_data |>
 #> Group By: day_of_week
 #> $Mon
 #>  drink_type      Large    Medium     Small       Total
-#>   Americano 12.0%  (3)  8.0% (2) 12.0% (3)  32.0%  (8)
-#>  Cappuccino 12.0%  (3)  0.0% (0)  0.0% (0)  12.0%  (3)
-#>    Espresso 12.0%  (3) 12.0% (3)  0.0% (0)  24.0%  (6)
-#>       Latte 16.0%  (4)  8.0% (2)  8.0% (2)  32.0%  (8)
-#>       Total 52.0% (13) 28.0% (7) 20.0% (5) 100.0% (25)
+#>   Americano 23.1%  (9)  7.7% (3)  7.7% (3)  38.5% (15)
+#>  Cappuccino 23.1%  (9)  0.0% (0)  5.1% (2)  28.2% (11)
+#>    Espresso 12.8%  (5)  0.0% (0)  2.6% (1)  15.4%  (6)
+#>       Latte  7.7%  (3)  7.7% (3)  2.6% (1)  17.9%  (7)
+#>       Total 66.7% (26) 15.4% (6) 17.9% (7) 100.0% (39)
 ```
 
 ### Tabulating Data with different percentages
@@ -218,11 +224,11 @@ larger_data |>
 #> Rows: All
 #> Group: None
 #>  drink_type       Large     Medium      Small        Total
-#>   Americano 11.0%  (22)  7.5% (15)  5.5% (11)  24.0%  (48)
-#>  Cappuccino 15.0%  (30)  4.0%  (8)  7.5% (15)  26.5%  (53)
-#>    Espresso 11.5%  (23)  7.0% (14)  5.0% (10)  23.5%  (47)
-#>       Latte 13.5%  (27)  5.5% (11)  7.0% (14)  26.0%  (52)
-#>       Total 51.0% (102) 24.0% (48) 25.0% (50) 100.0% (200)
+#>   Americano 16.5%  (33)  3.5%  (7)  5.5% (11)  25.5%  (51)
+#>  Cappuccino 16.5%  (33)  5.5% (11)  5.0% (10)  27.0%  (54)
+#>    Espresso 14.0%  (28)  8.5% (17)  4.0%  (8)  26.5%  (53)
+#>       Latte 12.5%  (25)  4.0%  (8)  4.5%  (9)  21.0%  (42)
+#>       Total 59.5% (119) 21.5% (43) 19.0% (38) 100.0% (200)
 
 # column percentages
 larger_data |>
@@ -234,11 +240,11 @@ larger_data |>
 #> Rows: All
 #> Group: None
 #>  drink_type        Large      Medium       Small        Total
-#>   Americano  21.6%  (22)  31.2% (15)  22.0% (11)  24.0%  (48)
-#>  Cappuccino  29.4%  (30)  16.7%  (8)  30.0% (15)  26.5%  (53)
-#>    Espresso  22.5%  (23)  29.2% (14)  20.0% (10)  23.5%  (47)
-#>       Latte  26.5%  (27)  22.9% (11)  28.0% (14)  26.0%  (52)
-#>       Total 100.0% (102) 100.0% (48) 100.0% (50) 100.0% (200)
+#>   Americano  27.7%  (33)  16.3%  (7)  28.9% (11)  25.5%  (51)
+#>  Cappuccino  27.7%  (33)  25.6% (11)  26.3% (10)  27.0%  (54)
+#>    Espresso  23.5%  (28)  39.5% (17)  21.1%  (8)  26.5%  (53)
+#>       Latte  21.0%  (25)  18.6%  (8)  23.7%  (9)  21.0%  (42)
+#>       Total 100.0% (119) 100.0% (43) 100.0% (38) 100.0% (200)
 
 # row percentages
 larger_data |>
@@ -250,11 +256,11 @@ larger_data |>
 #> Rows: All
 #> Group: None
 #>  drink_type       Large     Medium      Small        Total
-#>   Americano 45.8%  (22) 31.2% (15) 22.9% (11) 100.0%  (48)
-#>  Cappuccino 56.6%  (30) 15.1%  (8) 28.3% (15) 100.0%  (53)
-#>    Espresso 48.9%  (23) 29.8% (14) 21.3% (10) 100.0%  (47)
-#>       Latte 51.9%  (27) 21.2% (11) 26.9% (14) 100.0%  (52)
-#>       Total 51.0% (102) 24.0% (48) 25.0% (50) 100.0% (200)
+#>   Americano 64.7%  (33) 13.7%  (7) 21.6% (11) 100.0%  (51)
+#>  Cappuccino 61.1%  (33) 20.4% (11) 18.5% (10) 100.0%  (54)
+#>    Espresso 52.8%  (28) 32.1% (17) 15.1%  (8) 100.0%  (53)
+#>       Latte 59.5%  (25) 19.0%  (8) 21.4%  (9) 100.0%  (42)
+#>       Total 59.5% (119) 21.5% (43) 19.0% (38) 100.0% (200)
 # no percentages
 larger_data |>
   qtab(drink_type, size, per = "none")
@@ -265,15 +271,15 @@ larger_data |>
 #> Rows: All
 #> Group: None
 #>  drink_type Large Medium Small Total
-#>   Americano    22     15    11    48
-#>  Cappuccino    30      8    15    53
-#>    Espresso    23     14    10    47
-#>       Latte    27     11    14    52
-#>       Total   102     48    50   200
+#>   Americano    33      7    11    51
+#>  Cappuccino    33     11    10    54
+#>    Espresso    28     17     8    53
+#>       Latte    25      8     9    42
+#>       Total   119     43    38   200
 
 # Grouped tabulations
 data |>
-  qtab(drink_type, size, by_ = day_of_week, per = "none")
+  qtab(drink_type, size, .by = day_of_week, per = "none")
 #> 
 #> ── Table Details: ──────────────────────────────────────────────────────────────
 #> Columns: drink_type, size
@@ -306,7 +312,7 @@ data |>
 ``` r
 # Tabulate with a filter condition
 data |>
-  qtab(drink_type, size, if_ = size == "Large")
+  qtab(drink_type, size, .if = size == "Large")
 #> 
 #> ── Table Details: ──────────────────────────────────────────────────────────────
 #> Columns: drink_type, size
@@ -320,7 +326,7 @@ data |>
 
 # Tabulate specific rows
 data |>
-  qtab(drink_type, size, in_ = 1:3) 
+  qtab(drink_type, size, .in = 1:3) 
 #> 
 #> ── Table Details: ──────────────────────────────────────────────────────────────
 #> Columns: drink_type, size
@@ -335,7 +341,7 @@ data |>
 
 # Group and filter tabulations
 data |>
-  qtab(drink_type, size, by_ = day_of_week, if_ = day_of_week %in% c("Mon", "Tue"))
+  qtab(drink_type, size, .by = day_of_week, .if = day_of_week %in% c("Mon", "Tue"))
 #> 
 #> ── Table Details: ──────────────────────────────────────────────────────────────
 #> Columns: drink_type, size
@@ -362,7 +368,6 @@ piped into anything that `tabyl` can (I think?)
 library(qexplore)
 library(dplyr)
 library(janitor)
-#> Warning: package 'janitor' was built under R version 4.3.3
 #> 
 #> Attaching package: 'janitor'
 #> The following objects are masked from 'package:stats':
@@ -373,7 +378,7 @@ library(flextable)
 
 # Tabulate specific rows
 data |>
-  qtab(drink_type, size, in_ = 1:3) |> 
+  qtab(drink_type, size, .in = 1:3) |> 
    adorn_title(col_name = "Drink size", row_name = "Drink Type")
 #> 
 #> ── Table Details: ──────────────────────────────────────────────────────────────
@@ -404,7 +409,7 @@ library(gt)
 
 # Tabulate specific rows
 gt_table <- data |>
-  qtab(drink_type, size, in_ = 1:3) |> 
+  qtab(drink_type, size, .in = 1:3) |> 
   gt() |> 
     tab_header(
     title = "Drink Types by Day of the Week",
@@ -428,7 +433,7 @@ library(flextable)
 
 # Tabulate specific rows
 tabyl_data <- data |>
-  qtab(drink_type, size, in_ = 1:3) 
+  qtab(drink_type, size, .in = 1:3) 
 #> 
 #> ── Table Details: ──────────────────────────────────────────────────────────────
 #> Columns: drink_type, size
